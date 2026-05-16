@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Didáctico: Ecosistema AI Engineering Dinámico</title>
+    <style>
+        :root {
+            --apple-blue: #0071e3;
+            --apple-dark: #1d1d1f;
+            --apple-grey: #86868b;
+            --apple-light: #f5f5f7;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --success: #34c759;
+            --warning: #ff9500;
+            --danger: #ff3b30;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+            background-color: #f5f5f7;
+            color: var(--apple-dark);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding: 40px 20px 80px 20px; /* Margen inferior para el pie de página fijo */
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* --- HEADER --- */
+        header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header-text { flex: 1; }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--apple-blue);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+
+        h1 { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+        .subtitle { font-size: 15px; color: var(--apple-grey); }
+
+        /* --- PRINT BUTTONS --- */
+        .print-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2px;
+        }
+
+        .btn-print {
+            background-color: var(--apple-dark);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-print.primary {
+            background-color: var(--apple-blue);
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.15);
+        }
+
+        .btn-print:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        .section-print-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        /* --- TABS NAVIGATION --- */
+        .tabs-nav {
+            display: flex;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            gap: 2px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #424245;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover { background: rgba(255, 255, 255, 0.4); color: var(--apple-dark); }
+        .tab-btn.active {
+            background: #ffffff;
+            color: var(--apple-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            font-weight: 600;
+        }
+
+        /* --- PANELS --- */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* --- DASHBOARD GRID & CARDS --- */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 24px; margin-bottom: 24px; }
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+            position: relative;
+        }
+        .card-full { width: 100%; margin-bottom: 24px; }
+
+        h2 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--apple-dark); display: flex; align-items: center; gap: 8px; }
+        h3 { font-size: 14px; font-weight: 600; margin-top: 18px; margin-bottom: 8px; color: var(--apple-dark); }
+        p { font-size: 14px; color: #424245; margin-bottom: 12px; line-height: 1.6; }
+        
+        ol, ul { padding-left: 20px; margin-bottom: 15px; font-size: 14px; color: #424245; line-height: 1.6; }
+        li { margin-bottom: 10px; }
+        li::marker { font-weight: 600; color: var(--apple-blue); }
+
+        /* --- STEP BY STEP GUIDE STYLES --- */
+        .step-list { list-style: none; padding-left: 0; }
+        .step-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 24px;
+        }
+        .step-number {
+            position: absolute;
+            left: 0; top: 2px;
+            width: 34px; height: 34px;
+            background-color: rgba(0, 113, 227, 0.1);
+            color: var(--apple-blue);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700;
+        }
+        .step-content {
+            background: rgba(0, 0, 0, 0.02);
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+        }
+        .step-title-text { font-size: 15px; font-weight: 600; color: var(--apple-dark); margin-bottom: 6px; }
+
+        /* --- DIAGRAM COMPONENT --- */
+        .diagram-box {
+            background: var(--apple-light);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .diagram-node {
+            background: #ffffff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .node-left { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .arrow { text-align: center; color: var(--apple-blue); font-size: 12px; font-weight: 700; }
+
+        /* --- CODE HIGHLIGHT & TEXTAREAS --- */
+        .code-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .code-header {
+            background: #2d2d2d;
+            color: #9cdcfe;
+            padding: 8px 16px;
+            font-family: SFMono-Regular, Consolas, Monaco, monospace;
+            font-size: 11px;
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid #3d3d3d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .code-lang { color: #86868b; font-weight: 600; }
+        
+        .code-textarea {
+            width: 100%;
+            height: 380px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 18px;
+            border-radius: 0 0 12px 12px;
+            font-family: SFMono-Regular, Consolas, Monaco, monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            border: none;
+            resize: vertical;
+            outline: none;
+        }
+
+        .highlight-mark {
+            background: rgba(255, 149, 0, 0.1);
+            border-left: 3px solid var(--warning);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        /* --- INSIGHT & ALERTS --- */
+        .insight-box {
+            background-color: rgba(52, 199, 89, 0.06);
+            border: 1px solid rgba(52, 199, 89, 0.15);
+            border-radius: 14px;
+            padding: 16px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        .insight-title { font-weight: 600; color: #248a3d; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+
+        .alert-box {
+            background-color: rgba(255, 59, 48, 0.06);
+            border: 1px solid rgba(255, 59, 48, 0.15);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+        .alert-title { font-weight: 600; color: var(--danger); margin-bottom: 4px; font-size: 13px; }
+
+        .tech-pill {
+            display: inline-block;
+            background: var(--apple-light);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .pill-ok { background: rgba(52, 199, 89, 0.12); color: #248a3d; }
+
+        /* --- TABLES --- */
+        .table-mapped {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 15px 0;
+        }
+        .table-mapped th, .table-mapped td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .table-mapped th {
+            background-color: var(--apple-light);
+            font-weight: 600;
+            color: var(--apple-dark);
+        }
+
+        /* --- CREDIT FOOTER --- */
+        footer {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(245, 245, 247, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #6e6e73;
+            z-index: 1000;
+        }
+        .footer-name {
+            font-weight: 600;
+            color: var(--apple-dark);
+            letter-spacing: 0.02em;
+        }
+
+        /* =========================================================================
+           ESTILOS DE IMPRESIÓN DINÁMICOS
+           ========================================================================= */
+        @media print {
+            body { background-color: #ffffff; color: #000000; padding: 20px 20px 60px 20px; }
+            .container { max-width: 100%; width: 100%; }
+            .tabs-nav, .print-actions, .section-print-container { display: none !important; }
+            
+            body:not(.print-single-mode) .tab-panel {
+                display: block !important;
+                page-break-after: always;
+                opacity: 1 !important;
+            }
+            body:not(.print-single-mode) .tab-panel:last-child {
+                page-break-after: avoid;
+            }
+
+            body.print-single-mode .tab-panel { display: none !important; }
+            body.print-single-mode .tab-panel.active { display: block !important; page-break-after: avoid; }
+
+            .card, .diagram-box, .insight-box, .alert-box, .step-content {
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #bbb !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            .code-textarea {
+                border: 1px solid #bbb !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                height: auto !important;
+                white-space: pre-wrap !important;
+            }
+            footer {
+                position: running(footer); /* Estándar CSS de impresión para repetir pie de página */
+                position: fixed;
+                bottom: 0;
+                background: none;
+                border-top: 1px solid #aaa;
+                font-size: 10px;
+                padding: 8px 0;
+            }
+            h1, h2, h3 { page-break-after: avoid; }
+        }
+
+        @media (max-width: 768px) {
+            .tabs-nav { flex-direction: column; }
+            .grid-2 { grid-template-columns: 1fr; }
+            header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            body { padding: 20px 10px 100px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-text">
+            <span class="badge">Material de Transferencia Metodológica</span>
+            <h1>Ecosistema de Software e IA Engineering</h1>
+            <div class="subtitle">Despliegue guiado por especificaciones, resolución de CORS e inyección de llaves.</div>
+        </div>
+        <div class="print-actions">
+            <button class="btn-print primary" onclick="imprimirManualCompleto();">
+                📚 Imprimir Manual Completo
+            </button>
+        </div>
+    </header>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab(event, 'guia-paso')">
+            🏁 1. Guía de Despliegue Inicial
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'codigo-source')">
+            💻 2. Códigos Fuentes (Copy/Paste)
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'fundamentos')">
+            📚 3. Fundamentos y Arquitectura
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'laboratorio')">
+            🧠 4. Lección de Laboratorio (CORS)
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'auditoria')">
+            🔍 5. Auditoría e Ingeniería Inversa
+        </button>
+    </nav>
+
+    <div id="guia-paso" class="tab-panel active">
+        <div class="section-print-container">
+            <button class="btn-print" onclick="imprimirSeccionActual();">📄 Imprimir Solo Esta Sección</button>
+        </div>
+        <div class="card card-full">
+            <h2>Guía Práctica de Implementación Paso a Paso</h2>
+            <p>Sigue esta secuencia para inicializar la infraestructura en la nube y enlazar los bloques funcionales del laboratorio:</p>
+            
+            <ul class="step-list">
+                <li class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title-text">Generar una API_KEY en OpenAI</div>
+                        <p style="margin-bottom:0;">Ingresa a <span class="tech-pill">platform.openai.com</span>. Ve a la sección de <strong>API Keys</strong>, crea una nueva llave secreta y cópiala de inmediato. La necesitarás para el archivo del servidor.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title-text">Crear una Carpeta en Google Drive</div>
+                        <p style="margin-bottom:0;">Crea una carpeta exclusiva en tu Google Drive llamada <span class="tech-pill">Laboratorio AI Engineering</span> para organizar tus hojas de persistencia física.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title-text">Crea un Google Sheet (Planta Baja)</div>
+                        <p style="margin-bottom:0;">Dentro de la carpeta, inicializa un Google Sheet. Configura estrictamente los siguientes encabezados en la primera fila (Columnas A a G): <span class="tech-pill">IDFecha</span>, <span class="tech-pill">Remitente</span>, <span class="tech-pill">Redacción Original</span>, <span class="tech-pill">Categoría (IA)</span>, <span class="tech-pill">Prioridad</span>, <span class="tech-pill">Resumen / Análisis</span>, <span class="tech-pill">Acción Sugerida</span>.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title-text">Inicializar Google Apps Script (El Sótano)</div>
+                        <p style="margin-bottom:0;">En el menú superior de tu Google Sheet, navega a <strong>Extensiones &gt; Apps Script</strong>. Esto abrirá el editor de código del servidor.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-title-text">Vincular Código del Servidor y Pegar la API_KEY</div>
+                        <p style="margin-bottom:0;">Borra el código vacío del editor de Google y pega el contenido del bloque <strong>codigo.gs</strong> (disponible en la pestaña 2). Busca la línea que dice <span class="tech-pill">const API_KEY = "..."</span> e inyecta allí la llave generada en el Paso 1.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <div class="step-title-text">Publicar Aplicación Web Externa</div>
+                        <p style="margin-bottom:0;">Haz clic en <strong>Implementar &gt; Nueva implementación</strong>. Elige <em>"Aplicación web"</em>. Parámetros mandatorios: Ejecutar como: <strong>"Yo"</strong>, Quién tiene acceso: <strong>"Cualquiera"</strong>. Ejecuta, otorga los permisos de cuenta que solicita Google y copia la URL pública (<span class="tech-pill">/exec</span>) que te entrega la plataforma.</p>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <div class="step-title-text">Fin - Configurar la Interfaz Local (La Recepción)</div>
+                        <p style="margin-bottom:0;">Abre tu archivo local <span class="tech-pill">index.html</span>. Dirígete al bloque de código de configuración y **pega la URL de la Web App obtenida en el Paso 6** en el parámetro indicado. Abre el archivo en tu navegador, ingresa datos y observa la automatización sin bloqueos de CORS.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="codigo-source" class="tab-panel">
+        <div class="section-print-container">
+            <button class="btn-print" onclick="imprimirSeccionActual();">📄 Imprimir Solo Esta Sección</button>
+        </div>
+        
+        <div class="card card-full">
+            <h2>Repositorio Integrado de Código de Laboratorio</h2>
+            <p>Utiliza los siguientes cuadros de texto interactivos para copiar los fragmentos exactos listos para su ejecución de software:</p>
+            
+            <div class="highlight-mark">
+                <strong>📍 Orientación de Pegado Backend (codigo.gs):</strong> Reemplaza la línea número 4 (<span class="tech-pill">const API_KEY = "..."</span>) por tu clave secreta de OpenAI.
+            </div>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span>codigo.gs (Google Apps Script - El Sótano)</span>
+                    <span class="code-lang">JavaScript / Servidor</span>
+                </div>
+                <textarea class="code-textarea" readonly onclick="this.select();">
+/**
+ * BACKEND: Ecosistema de Conexión Segura con Inferencia Semántica Abierta
+ * Plataforma: Google Apps Script (El Sótano)
+ */
+
+const API_KEY = "TU_API_KEY_OPENAI_AQUI"; // <--- (1) PEGA TU API_KEY DE OPENAI AQUÍ
+
+function doGet(e) {
+  try {
+    var callback = e.parameter.callback;
+    var nombre = e.parameter.nombre || "Remitente Anónimo";
+    var redaccion = e.parameter.redaccion || "";
+    
+    if (!redaccion) {
+      return generarRespuestaJSONP(callback, { status: "error", message: "Falta la descripción del caso." });
+    }
+    
+    // Llamar al Cerebro (Inferencia Semántica Inteligente)
+    var resultadoIA = llamarCerebroIA(redaccion);
+    
+    // Abrir Base de Datos (La Planta Baja)
+    var libro = SpreadsheetApp.getActiveSpreadsheet();
+    var hoja = libro.getSheets()[0];
+    
+    // Consolidación de Fila Física (Alineación Estricta de 7 Columnas Corregidas)
+    var filaEstructurada = [
+      new Date(),                 // Col A: ID / Crono
+      nombre,                     // Col B: Remitente
+      redaccion,                  // Col C: Redacción de Entrada
+      resultadoIA.categoria,      // Col D: Inferencia Semántica
+      resultadoIA.prioridad,      // Col E: Mapeo de Urgencia
+      resultadoIA.analisis,       // Col F: Resumen Crítico (10 palabras)
+      resultadoIA.accion_sugerida // Col G: Mitigación Técnica Inmediata
+    ];
+    
+    hoja.appendRow(filaEstructurada);
+    return generarRespuestaJSONP(callback, { status: "success", data: resultadoIA });
+    
+  } catch (error) {
+    return generarRespuestaJSONP(e.parameter.callback, { status: "error", message: error.toString() });
+  }
+}
+
+function llamarCerebroIA(textoLargo) {
+  var url = "https://api.openai.com/v1/chat/completions";
+  
+  var instrucciones = "Eres un analizador semántico de PQRS industriales. Evalúa el texto ingresado por el usuario. " +
+                      "Devuelve OBLIGATORIAMENTE un objeto JSON plano estructurado con las siguientes llaves exactas sin formatos markdown o bloques de texto adicionales: " +
+                      '{"categoria": "Soporte Técnico, Facturación, Reclamo, Infraestructura", "prioridad": "ALTA, MEDIA, BAJA", "analisis": "Resumen del core en 10 palabras", "accion_sugerida": "Acción técnica inmediata recomendada"}. ' +
+                      'Texto a evaluar: "' + textoLargo + '"';
+
+  var payload = {
+    "model": "gpt-4o-mini",
+    "messages": [{"role": "user", "content": instrucciones}],
+    "temperature": 0
+  };
+  
+  var opciones = {
+    "method": "post",
+    "contentType": "application/json",
+    "headers": { "Authorization": "Bearer " + API_KEY },
+    "payload": JSON.stringify(payload),
+    "muteHttpExceptions": true
+  };
+  
+  var respuesta = UrlFetchApp.fetch(url, opciones);
+  var jsonResponse = JSON.parse(respuesta.getContentText());
+  
+  // Extraer el String JSON limpio del contenido del mensaje
+  var contenidoLimpio = jsonResponse.choices[0].message.content.trim();
+  return JSON.parse(contenidoLimpio);
+}
+
+function generarRespuestaJSONP(callback, objetoData) {
+  var output = callback + "(" + JSON.stringify(objetoData) + ");";
+  return ContentService.createTextOutput(output).setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+</textarea>
+            </div>
+
+            <div class="highlight-mark" style="background: rgba(0, 113, 227, 0.1); border-left-color: var(--apple-blue);">
+                <strong>📍 Orientación de Pegado Frontend (index.html):</strong> Busca la línea de configuración número 15 dentro de la etiqueta Script (<span class="tech-pill">const WEB_APP_URL = "..."</span>) y pega la dirección de Google que copiaste en el Paso 6.
+            </div>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span>index.html (Interfaz Local de Usuario - La Recepción)</span>
+                    <span class="code-lang">HTML5 / JavaScript</span>
+                </div>
+                <textarea class="code-textarea" readonly onclick="this.select();">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>La Recepción - Interfaz Dinámica SDD</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f5f5f7; padding: 30px; color: #1d1d1f; }
+        .box { max-width: 500px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 18px; border: 1px solid rgba(0,0,0,0.08); }
+        h2 { margin-bottom: 15px; font-size: 20px; }
+        label { display: block; margin: 12px 0 4px; font-weight: 600; font-size: 13px; }
+        input, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; }
+        button { width: 100%; padding: 12px; margin-top: 15px; background: #0071e3; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Formulario de Registro AI Engineering</h2>
+    <form id="appForm">
+        <label>Nombre del Remitente</label>
+        <input type="text" id="nombreInput" placeholder="Ej: Héctor Fabio">
+        
+        <label>Redacción de la Falla o PQRS</label>
+        <textarea id="redaccionInput" rows="4" placeholder="Describa de forma detallada la anomalía..."></textarea>
+        
+        <button type="button" onclick="despacharTransmision()">Transmitir Datos Abiertos</button>
+    </form>
+</div>
+
+<script>
+    // URL PÚBLICA DE GOOGLE APPS SCRIPT OBTENIDA EN PASO 6
+    const WEB_APP_URL = "TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI"; // <--- (2) PEGA TU URL /EXEC AQUÍ
+
+    function despacharTransmision() {
+        const nombre = document.getElementById('nombreInput').value;
+        const redaccion = document.getElementById('redaccionInput').value;
+        
+        if(!redaccion) return alert("Por favor complete el campo de redacción.");
+        
+        // Crear de forma dinámica el Tag Script para burlar las restricciones de CORS (Mecánica JSONP)
+        const scriptInyectado = document.createElement('script');
+        
+        // Adjuntar parámetros de negocio + Identificador único de Callback Global
+        scriptInyectado.src = `${WEB_APP_URL}?nombre=${encodeURIComponent(nombre)}&redaccion=${encodeURIComponent(redaccion)}&callback=callbackProcesar`;
+        
+        // Manejo defensivo contra caídas de red o URLs erróneas
+        scriptInyectado.onerror = () => {
+            alert("Error crítico de transmisión: Verifique la URL de la Web App o los permisos del script.");
+            document.body.removeChild(scriptInyectado);
+        };
+
+        document.body.appendChild(scriptInyectado);
+    }
+
+    // Función Global encargada de capturar el retorno empaquetado del servidor
+    window.callbackProcesar = function(respuesta) {
+        if(respuesta.status === "success") {
+            alert(`¡Procesado Exitosamente por la IA!\n\nCategoría: ${respuesta.data.categoria}\nPrioridad: ${respuesta.data.prioridad}\nAnálisis: ${respuesta.data.analisis}`);
+            document.getElementById('appForm').reset();
+        } else {
+            alert(`Error en el Sótano: ${respuesta.message}`);
+        }
+        
+        // Limpieza de memoria eliminando los tags residuales del DOM
+        const scripts = document.querySelectorAll('script[src*="callback=callbackProcesar"]');
+        scripts.forEach(s => s.parentNode.removeChild(s));
+    }
+</script>
+</body>
+</html>
+</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="fundamentos" class="tab-panel">
+        <div class="section-print-container">
+            <button class="btn-print" onclick="imprimirSeccionActual();">📄 Imprimir Solo Esta Sección</button>
+        </div>
+        <div class="card card-full">
+            <h2>El Circuito de Información Unificado</h2>
+            <p>Este recurso metodológico expone el acoplamiento técnico de soluciones orientadas a la lógica de <strong>Desarrollo Guiado por Especificaciones (Spec-Driven Development)</strong>. El sistema opera aislando de manera estricta la interfaz, el procesamiento y la persistencia de datos.</p>
+            
+            <div class="diagram-box">
+                <div class="diagram-node">
+                    <div class="node-left">📡 Capa 1: La Recepción (Interfaz HTML5)</div>
+                    <span>Formulario agnóstico generado en tiempo de ejecución basado en especificaciones de datos.</span>
+                </div>
+                <div class="arrow">⬇️ Transmisión nativa mediante inyección dinámica de Tags &lt;script&gt;</div>
+                
+                <div class="diagram-node">
+                    <div class="node-left">⚙️ Capa 2: El Sótano (Google Apps Script)</div>
+                    <span>Enrutador síncrono dual (doGet/doPost) con filtrado defensivo contra objetos y cargas nulas.</span>
+                </div>
+                <div class="arrow">⬇️ Payload JSON determinista sin formato Markdown (Temperatura: 0)</div>
+                
+                <div class="diagram-node">
+                    <div class="node-left">🧠 Capa 3: El Cerebro (OpenAI API / gpt-4o-mini)</div>
+                    <span>Procesamiento lingüístico estructural. Clasifica, prioriza y genera mitigación técnica inmediata.</span>
+                </div>
+                <div class="arrow">⬇️ Inserción de matriz indexada y alineada en bloques</div>
+                
+                <div class="diagram-node">
+                    <div class="node-left">📊 Capa 4: La Planta Baja (Google Sheets Database)</div>
+                    <span>Estructura física relacional simplificada en un libro consolidado de 7 columnas limpias.</span>
+                </div>
+            </div>
+            
+            <h3>Lógica Modular por Dominios</h3>
+            <p>La separación estricta de responsabilidades (Metodología de Torres) asegura que si el motor semántico de la IA requiere un cambio de prompt o una actualización del modelo, la interfaz visual no requiera modificación alguna, protegiendo la estabilidad del software.</p>
+        </div>
+    </div>
+
+    <div id="laboratorio" class="tab-panel">
+        <div class="section-print-container">
+            <button class="btn-print" onclick="imprimirSeccionActual();">📄 Imprimir Solo Esta Sección</button>
+        </div>
+        <div class="card card-full">
+            <h2>El Caso de Éxito del Protocolo Local vs Red</h2>
+            <p>Durante las fases de integración del laboratorio, un obstáculo común surge cuando el desarrollador abre el archivo de la interfaz directamente desde el almacenamiento local del disco duro.</p>
+            
+            <div class="grid-2">
+                <div class="card" style="border-left: 4px solid #ff3b30; padding: 20px;">
+                    <h3>El Síntoma del Bloqueo</h3>
+                    <p>Al arrancar el archivo desde <span class="tech-pill">file:///Users/...</span>, los navegadores modernos aplican políticas de seguridad restrictivas denominadas <strong>CORS (Cross-Origin Resource Sharing)</strong>.</p>
+                    <p>Si la interfaz intenta enviar los inputs usando un comando asíncrono <span class="tech-pill">fetch()</span> estándar, el navegador intercepta la señal y corta la salida de datos. Al usar <span class="tech-pill">mode: "no-cors"</span>, la interfaz muestra un mensaje de éxito simulado, pero el paquete real es destruido, enviando una carga vacía al servidor.</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--success); padding: 20px;">
+                    <h3>La Solución de Ingeniería: JSONP</h3>
+                    <p>Para resolver este aislamiento sin montar servidores web adicionales, se implementó <strong>JSONP (JSON con Padding)</strong>.</p>
+                    <p>Los navegadores prohíben la salida de datos asíncronos locales, pero permiten la inserción de scripts externos (como librerías o CDNs). Al inyectar dinámicamente una etiqueta <span class="tech-pill">&lt;script src="URL?datos..."&gt;</span> en el DOM, los datos viajan integrados en la petición de forma nativa, saltando el bloqueo CORS local.</p>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-title">💡 Lección Metodológica Transferible</div>
+                El Sótano procesa la petición a través del punto de acceso <span class="tech-pill">doGet(e)</span>, guarda los registros tras llamar al Cerebro, y emite una respuesta envuelta en una función ejecutable llamada <em>Callback</em> (<span class="tech-pill">callbackProcesar(...)</span>). De esta forma, la interfaz local captura la respuesta legítimamente.
+            </div>
+        </div>
+    </div>
+
+    <div id="auditoria" class="tab-panel">
+        <div class="section-print-container">
+            <button class="btn-print" onclick="imprimirSeccionActual();">📄 Imprimir Solo Esta Sección</button>
+        </div>
+        <div class="card card-full">
+            <div class="alert-box">
+                <div class="alert-title" style="margin-bottom:0; display:flex; align-items:center; gap:8px;">
+                    ⚠️ Alerta de Seguridad de Infraestructura: Exposición de Claves Críticas Detectada en Depuración
+                </div>
+            </div>
+            <p>Al auditar las pilas de llamadas y los registros de ejecución en el depurador del servidor, se identificó que las peticiones iniciales arrojaban errores analíticos debido a un **desfase dimensional de la matriz de persistencia** y variables sin definir (<span class="tech-pill">e: undefined</span>).</p>
+            
+            <h3>Sincronización Corregida de la Base de Datos</h3>
+            <p>La solución de ingeniería inversa requirió re-linear el comando de escritura secuencial para acoplar la estructura física de la hoja de cálculo de 6 a 7 columnas fijas, evitando la inyección cruzada de datos semánticos:</p>
+
+            <table class="table-mapped">
+                <thead>
+                    <tr>
+                        <th>Índice</th>
+                        <th>Columna del Libro (Persistencia)</th>
+                        <th>Origen del Campo (Capa de Datos)</th>
+                        <th>Estado Técnico del Acoplamiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>ID / Fecha y Hora</td>
+                        <td>Estampa cronológica nativa de Google Script (<span class="tech-pill">new Date()</span>)</td>
+                        <td><span class="status-pill pill-ok">Sincronizado</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Remitente</td>
+                        <td>Variable dinámica extraída de la interfaz (<span class="tech-pill">datosRecibidos.nombre</span>)</td>
+                        <td><span class="status-pill pill-ok">Sincronizado</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Redacción Original</td>
+                        <td>Variable libre de descripción de caso (<span class="tech-pill">datosRecibidos.redaccion</span>)</td>
+                        <td><span class="status-pill pill-ok">Sincronizado</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Categoría (IA)</td>
+                        <td>Inferencia semántica del Cerebro: <span class="tech-pill">resultadoIA.categoria</span></td>
+                        <td><span class="status-pill pill-ok">Sincronizado</span></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Prioridad (IA)</td>
+                        <td>Inferencia determinista de urgencia: <span class="tech-pill">resultadoIA.prioridad</span></td>
+                        <td><span class="status-pill pill-ok">Sincronizado</span></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Resumen / Análisis</td>
+                        <td>Síntesis condensada en 10 palabras: <span class="tech-pill">resultadoIA.analisis</span></td>
+                        <td><span class="status-pill pill-ok">Sincronizado (Corregido)</span></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Acción Sugerida</td>
+                        <td>Estrategia técnica recomendada inmediata: <span class="tech-pill">resultadoIA.accion_sugerida</span></td>
+                        <td><span class="status-pill pill-ok">Sincronizado (Alineado)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer>
+    Diseño y Arquitectura de Laboratorio por: <span class="footer-name">HÉCTOR FABIO HOYOS GIRALDO</span> | Ingeniero en Informática | Maestría en Informática Aplicada a la Educación
+</footer>
+
+<script>
+    function switchTab(evt, tabId) {
+        const panels = document.querySelectorAll('.tab-panel');
+        panels.forEach(panel => panel.classList.remove('active'));
+
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    function imprimirManualCompleto() {
+        document.body.classList.remove('print-single-mode');
+        window.print();
+    }
+
+    function imprimirSeccionActual() {
+        document.body.classList.add('print-single-mode');
+        window.print();
+    }
+</script>
+
+</body>
+</html>
