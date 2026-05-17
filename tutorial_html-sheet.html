@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supertutorial Avanzado: Ecosistema PQRS Inteligente</title>
+    <style>
+        :root {
+            --apple-blue: #0071e3;
+            --apple-dark: #1d1d1f;
+            --apple-grey: #86868b;
+            --apple-light: #f5f5f7;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --success: #34c759;
+            --warning: #ff9500;
+            --danger: #ff3b30;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+            background-color: #f5f5f7;
+            color: var(--apple-dark);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding: 40px 20px 100px 20px;
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+
+        /* --- HEADER --- */
+        header {
+            margin-bottom: 35px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 25px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--apple-blue);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        h1 { 
+            font-size: 32px; 
+            font-weight: 600; 
+            letter-spacing: -0.025em; 
+            margin-bottom: 8px; 
+        }
+
+        .subtitle { 
+            font-size: 16px; 
+            color: var(--apple-grey); 
+        }
+
+        /* --- TABS NAVIGATION --- */
+        .tabs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+            gap: 2px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 120px;
+            background: none;
+            border: none;
+            padding: 12px 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #424245;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .tab-btn:hover { 
+            background: rgba(255, 255, 255, 0.4); 
+            color: var(--apple-dark); 
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: var(--apple-blue);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            font-weight: 600;
+        }
+
+        /* --- PANELES --- */
+        .tab-panel { 
+            display: none; 
+        }
+        
+        .tab-panel.active { 
+            display: block; 
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01);
+            margin-bottom: 25px;
+        }
+
+        h2 { 
+            font-size: 22px; 
+            font-weight: 600; 
+            margin-bottom: 20px; 
+            color: var(--apple-dark);
+            letter-spacing: -0.01em;
+            border-left: 4px solid var(--apple-blue);
+            padding-left: 12px;
+        }
+
+        h3 { 
+            font-size: 16px; 
+            font-weight: 600; 
+            margin-top: 25px; 
+            margin-bottom: 12px; 
+            color: var(--apple-dark);
+        }
+
+        p { 
+            font-size: 14.5px; 
+            color: #424245; 
+            margin-bottom: 15px; 
+            line-height: 1.6; 
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+            font-size: 14.5px;
+            color: #424245;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* --- DOFA TABLE --- */
+        .dofa-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .dofa-box {
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .dofa-d { background: rgba(255,59,48,0.04); border-left: 4px solid var(--danger); }
+        .dofa-o { background: rgba(52,199,89,0.04); border-left: 4px solid var(--success); }
+        .dofa-f { background: rgba(0,113,227,0.04); border-left: 4px solid var(--apple-blue); }
+        .dofa-a { background: rgba(255,149,0,0.04); border-left: 4px solid var(--warning); }
+
+        /* --- CÓDIGO Y GUÍAS DE EXPLICACIÓN --- */
+        .code-layout {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .code-layout, .dofa-grid { grid-template-columns: 1fr; }
+        }
+
+        .code-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-header {
+            background: #2d2d2d; 
+            color: #9cdcfe; 
+            padding: 12px 20px;
+            font-family: SFMono-Regular, Consolas, monospace; 
+            font-size: 12px;
+            border-radius: 14px 14px 0 0;
+            font-weight: 600;
+        }
+
+        .code-textarea {
+            width: 100%; 
+            height: 450px; 
+            background: #1e1e1e; 
+            color: #d4d4d4;
+            padding: 20px; 
+            border-radius: 0 0 14px 14px;
+            font-family: SFMono-Regular, Consolas, monospace; 
+            font-size: 12.5px;
+            border: none; 
+            resize: none;
+            outline: none; 
+            line-height: 1.6;
+        }
+
+        .code-guide {
+            background: var(--apple-light);
+            border-radius: 14px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .highlight-marker {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #856404;
+        }
+
+        .tech-pill { 
+            display: inline-block; 
+            background: rgba(0,0,0,0.05); 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-family: SFMono-Regular, Consolas, monospace; 
+            font-size: 12px;
+        }
+
+        /* --- PLANTA BAJA DINÁMICA --- */
+        .dashboard-split {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 85vh;
+            min-height: 650px;
+        }
+
+        .dashboard-control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--apple-light);
+            padding: 15px 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .refresh-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 150px;
+            height: 6px;
+            background: #d2d2d7;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--apple-blue);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .refresh-badge {
+            background: var(--apple-dark);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .frame-wrapper {
+            flex: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: white;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0 0 rgba(52,199,89,0.7); }
+            70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 6px rgba(52,199,89,0); }
+            100% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0 0 rgba(52,199,89,0); }
+        }
+
+        /* --- PASO A PASO --- */
+        .roadmap-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .roadmap-step {
+            border-left: 2px solid var(--apple-blue);
+            padding-left: 25px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .roadmap-step::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border: 2px solid var(--apple-blue);
+            border-radius: 50%;
+        }
+
+        .deliverable-box {
+            background: rgba(52,199,89,0.06);
+            border: 1px dashed var(--success);
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 13.5px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%;
+            background: rgba(245, 245, 247, 0.94); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border-color); 
+            padding: 16px;
+            text-align: center; 
+            font-size: 12.5px; 
+            color: #6e6e73;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="badge">Ecosistema Integrado de Aprendizaje</span>
+        <h1>Manual Técnico y Laboratorio Vivo: PQRS Inteligente</h1>
+        <div class="subtitle">Estructura unificada bajo la Metodología Torres para la transferencia tecnológica de AI Engineering.</div>
+    </header>
+
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-contexto')">🎯 Contexto y DOFA</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-arquitectura')">📱 El App y Requerimientos</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-roadmap')">🗺️ Roadmap y Pasos</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-gs')">⚙️ Código Sótano (.gs)</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-html')">🌐 Código Recepción (.html)</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-plantabaja')">📊 Planta Baja (Laboratorio Vivo)</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-futuro')">🚀 Futuras Implementaciones</button>
+    </nav>
+
+    <!-- [a] QUE ES PQRS Y DOFA -->
+    <div id="tab-contexto" class="tab-panel active">
+        <div class="card">
+            <h2>¿Qué es un Sistema PQRS?</h2>
+            <p>Un sistema de <strong>Peticiones, Quejas, Reclamos y Sugerencias (PQRS)</strong> representa el canal primario de interacción y retroalimentación entre un usuario y una organización. Tradicionalmente, la clasificación, enrutamiento y priorización de estas solicitudes se realiza mediante procesos manuales propensos a cuellos de botella e inconsistencias de criterio humano.</p>
+            
+            <h3>Matriz DOFA Estratégica: El Enfoque del Ecosistema Automatizado</h3>
+            <p>Analizando la infraestructura tecnológica clásica frente al paradigma de <strong>AI Engineering</strong>, identificamos una ventana de oportunidad única al conectar aplicaciones desacopladas con motores lógicos inteligentes soportados en hojas de cálculo asíncronas:</p>
+            
+            <div class="dofa-grid">
+                <div class="dofa-box dofa-d">
+                    <h3>Debilidades (Sistemas Tradicionales)</h3>
+                    <ul>
+                        <li>Clasificación manual lenta y subjetiva de las PQRS.</li>
+                        <li>Falta de respuestas inmediatas o acuses de recibo estructurados.</li>
+                        <li>Fragmentación de datos por almacenamiento local aislado.</li>
+                    </ul>
+                </div>
+                <div class="dofa-box dofa-o">
+                    <h3>Oportunidades (La Gran Ventana)</h3>
+                    <p><strong>Generar una Web App ligera conectada a Google Sheets mediante Apps Script como canal asíncrono y OpenAI como motor lógico.</strong> Permite democratizar el uso de IA empresarial sin requerir costos de servidores dedicados ni bases de datos SQL complejas.</p>
+                </div>
+                <div class="dofa-box dofa-f">
+                    <h3>Fortalezas del Ecosistema Prouesto</h3>
+                    <ul>
+                        <li>Costo de infraestructura cercano a cero utilizando recursos Cloud nativos.</li>
+                        <li>Clasificación y análisis semántico en tiempo real (menos de 3 segundos).</li>
+                        <li>Desacoplamiento total entre la interfaz de usuario (Recepción) y el almacén persistente (Planta Baja).</li>
+                    </ul>
+                </div>
+                <div class="dofa-box dofa-a">
+                    <h3>Amenazas del Entorno</h3>
+                    <ul>
+                        <li>Exposición o filtración de API Keys si se exponen en el lado del cliente (resuelto delegándolo al Sótano).</li>
+                        <li>Dependencia de la disponibilidad de los endpoints de la API externa.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [b] DESCRIPCIÓN DEL APP Y [c] REQUERIMIENTOS -->
+    <div id="tab-arquitectura" class="tab-panel">
+        <div class="card">
+            <h2>Descripción General de la Aplicación</h2>
+            <p>La solución se despliega bajo la arquitectura de la <strong>Metodología Torres</strong>, organizando la aplicación en componentes funcionales totalmente autónomos:</p>
+            <ul>
+                <li><strong>La Recepción (Frontend - index.html):</strong> Una interfaz táctil, limpia y elegante inspirada en las guías de interfaz humana de Apple. Captura los datos mínimos del usuario y los despacha mediante una llamada asíncrona ciega, mitigando problemas de CORS.</li>
+                <li><strong>El Sótano (Middleware - Código Apps Script):</strong> Funciona como el motor oculto de orquestación y lógica de negocio. Recibe el impacto del frontend, interactúa de servidor a servidor con los modelos de lenguaje de OpenAI usando esquemas JSON estructurados rígidos, y escribe la traza limpia en la base de datos.</li>
+                <li><strong>La Planta Baja (Persistencia - Google Sheets):</strong> El repositorio centralizado donde se asientan las filas de datos enriquecidos por la IA, permitiendo la visualización directa e inmediata del estado del laboratorio.</li>
+            </ul>
+
+            <h3>Requerimientos del Sistema</h3>
+            <h3>Requerimientos Funcionales (RF)</h3>
+            <ol>
+                <li><strong>RF-01 Captura de Datos:</strong> El sistema debe proveer campos limpios para nombre del remitente y redacción libre de la PQRS.</li>
+                <li><strong>RF-02 Enriquecimiento por IA:</strong> El backend debe invocar de forma imperativa un modelo GPT para clasificar la solicitud en categorías (Petición, Queja, Reclamo, Sugerencia) y prioridades (Alta, Media, Baja) sin intervención humana.</li>
+                <li><strong>RF-03 Persistencia Asíncrona:</strong> Se debe inyectar de forma atómica cada registro en una fila de la matriz activa de Google Sheets incluyendo marcas temporales exactas.</li>
+            </ol>
+            <h3>Requerimientos No Funcionales (RNF)</h3>
+            <ol>
+                <li><strong>RNF-01 Seguridad de Credenciales:</strong> La clave API de OpenAI debe permanecer estrictamente oculta en variables de entorno del servidor (Sótano), jamás expuesta en el código del navegador del cliente.</li>
+                <li><strong>RNF-02 Estética de Interfaz:</strong> El diseño gráfico debe implementar propiedades visuales avanzadas: transparencias de fondo (Glassmorphism), fuentes tipográficas del sistema y bordes suavizados con un radio uniforme de 12 a 16px.</li>
+                <li><strong>RNF-03 Compatibilidad Cruzada (No-CORS):</strong> La comunicación debe ejecutarse en modo opaco para posibilitar el transporte directo entre servidores locales de prueba y las instancias Cloud de Google.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- [d] ROADMAP Y [g] PASO A PASO CON ENTREGABLES -->
+    <div id="tab-roadmap" class="tab-panel">
+        <div class="card">
+            <h2>Roadmap y Secuencia de Construcción del Ecosistema</h2>
+            <p>Sigue esta línea de tiempo procedimental diseñada para asegurar la repetibilidad absoluta del entorno técnico por parte de los aprendices:</p>
+            
+            <div class="roadmap-list">
+                <div class="roadmap-step">
+                    <h3>Paso 1: Inicialización de la Matriz Persistente (Planta Baja)</h3>
+                    <p>Crear la hoja de cálculo de Google Drive y estructurar las primeras 6 columnas de la fila de cabecera de forma exacta.</p>
+                    <div class="deliverable-box">
+                        <strong>Entregable esperado:</strong> Archivo de Google Sheet con las cabeceras: <code>IDFecha</code>, <code>Remitente</code>, <code>Redacción Original</code>, <code>Categoría</code>, <code>Prioridad</code> y <code>Análisis</code>. Enlace de visibilidad configurado en modo público de lectura.
+                    </div>
+                </div>
+
+                <div class="roadmap-step">
+                    <h3>Paso 2: Implementación de la Lógica del Sótano (Apps Script)</h3>
+                    <p>Abrir el editor de código integrado en la hoja de cálculo, vaciar el entorno y transcribir las rutinas de comunicación del backend.</p>
+                    <div class="deliverable-box">
+                        <strong>Entregable esperado:</strong> Archivo <code>index.gs</code> guardado, con la función <code>pruebaEscritura</code> ejecutada con éxito y permisos de seguridad del usuario explícitamente autorizados.
+                    </div>
+                </div>
+
+                <div class="roadmap-step">
+                    <h3>Paso 3: Publicación y Despliegue del Web Service Container</h3>
+                    <p>Compilar y desplegar el script bajo la modalidad de aplicación web con permisos de acceso universales.</p>
+                    <div class="deliverable-box">
+                        <strong>Entregable esperado:</strong> URL de producción única de Google que termina con el sufijo de ejecución segura <code>/exec</code>.
+                    </div>
+                </div>
+
+                <div class="roadmap-step">
+                    <h3>Paso 4: Sincronización y Orquestación del Cliente (Recepción)</h3>
+                    <p>Configurar el archivo HTML local, inyectando la URL generada del script en la variable fetch de la interfaz de usuario.</p>
+                    <div class="deliverable-box">
+                        <strong>Entregable esperado:</strong> Archivo <code>index.html</code> operativo localmente. Al ingresar una solicitud de prueba, esta debe aparecer clasificada por la IA en la hoja de Google Sheets en menos de 5 segundos.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [e] CÓDIGO .GS EXPLICADO -->
+    <div id="tab-gs" class="tab-panel">
+        <div class="card">
+            <h2>Código Base del Servidor: El Sótano (index.gs)</h2>
+            <p>Este bloque procesa las solicitudes entrantes, actúa como puente seguro con OpenAI y escribe los resultados enriquecidos en Google Sheets.</p>
+            
+            <div class="code-layout">
+                <div class="code-container">
+                    <div class="code-header">index.gs</div>
+                    <textarea class="code-textarea" readonly onclick="this.select();">
+const API_KEY = "PEGA TU API_KEY DE OPENAI AQUI"; 
+const API_URL = "https://api.openai.com/v1/chat/completions"; 
+const MODELO = "gpt-4o-mini";
+
+function doPost(e) {
+  try {
+    const libro = SpreadsheetApp.getActiveSpreadsheet();
+    const hoja = libro.getActiveSheet();
+    
+    const datosRecibidos = JSON.parse(e.postData.contents);
+    const nombreUsuario = datosRecibidos.nombre || "Anónimo";
+    const redaccionUsuario = datosRecibidos.redaccion;
+    
+    const resultadoIA = llamarCerebroIA(redaccionUsuario);
+    
+    const filaEstructurada = [
+      new Date(), 
+      nombreUsuario, 
+      redaccionUsuario, 
+      resultadoIA.categoria, 
+      resultadoIA.prioridad, 
+      resultadoIA.analisis
+    ];
+    
+    hoja.appendRow(filaEstructurada);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "success",
+      message: "PQRS guardada y clasificada con éxito"
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function llamarCerebroIA(textoLargo) {
+  const instrucciones = `
+    Eres un analista experto en servicio al cliente. 
+    Tu objetivo es leer el comentario de un usuario y clasificarlo.
+    REGLAS:
+    1. Categoría: PETICION, QUEJA, RECLAMO o SUGERENCIA.
+    2. Prioridad: ALTA, MEDIA o BAJA.
+    3. Análisis: Resume la intención en máximo 10 palabras.
+    RESPUESTA: JSON plano.
+    COMENTARIO: "${textoLargo}"
+  `;
+
+  const payload = {
+    "model": MODELO,
+    "messages": [
+      { "role": "system", "content": "Solo respondes en formato JSON profesional." },
+      { "role": "user", "content": instrucciones }
+    ],
+    "temperature": 0 
+  };
+
+  const opciones = {
+    "method": "post",
+    "contentType": "application/json",
+    "headers": { "Authorization": "Bearer " + API_KEY },
+    "payload": JSON.stringify(payload),
+    "muteHttpExceptions": true
+  };
+
+  const respuesta = UrlFetchApp.fetch(API_URL, opciones);
+  const cuerpo = JSON.parse(respuesta.getContentText());
+  
+  let contenido = cuerpo.choices[0].message.content;
+  contenido = contenido.replace("```json", "").replace("```", "").trim();
+  
+  return JSON.parse(contenido);
+}
+
+function pruebaEscritura() {
+  const hoja = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  hoja.appendRow([new Date(), "Prueba Manual", "Verificación de permisos"]);
+}
+</textarea>
+                </div>
+                
+                <div class="code-guide">
+                    <h3>Análisis de Estructura e Instrumentación</h3>
+                    <p><strong>¿Dónde agregar la API Key?</strong><br>
+                    Modifica la línea 1 reemplazando el valor asignado a la constante <span class="highlight-marker">API_KEY</span> con tu token secreto provisto por la plataforma de OpenAI.</p>
+                    
+                    <h3 style="margin-top:15px;">Puntos Clave del Backend:</h3>
+                    <ul>
+                        <li><span class="tech-pill">doPost(e)</span>: Intercepta las transmisiones entrantes de la web de forma nativa.</li>
+                        <li><span class="tech-pill">llamarCerebroIA()</span>: Construye un prompt estricto forzando al LLM a comportarse como un analizador determinista que responde única y exclusivamente cadenas estructuradas legibles en JSON.</li>
+                        <li><span class="tech-pill">hoja.appendRow()</span>: Modifica la Planta Baja insertando los datos en una operación atómica.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [f] CÓDIGO .HTML EXPLICADO -->
+    <div id="tab-html" class="tab-panel">
+        <div class="card">
+            <h2>Código Base de la Interfaz: La Recepción (index.html)</h2>
+            <p>La vista limpia y responsiva que los usuarios o clientes finales manipulan para registrar sus PQRS.</p>
+            
+            <div class="code-layout">
+                <div class="code-container">
+                    <div class="code-header">index.html</div>
+                    <textarea class="code-textarea" readonly onclick="this.select();">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema PQRS Inteligente</title>
+    <style>
+        :root { --apple-blue: #0071e3; --glass: rgba(255, 255, 255, 0.7); }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #f5f5f7 0%, #d2d2d7 100%);
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; color: #1d1d1f;
+        }
+        .card-form { 
+            background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05); width: 100%; max-width: 400px;
+        }
+        h1 { font-size: 22px; font-weight: 600; text-align: center; margin-bottom: 25px; }
+        label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 6px; color: #86868b; text-transform: uppercase; }
+        input, textarea { 
+            width: 100%; padding: 12px; margin-bottom: 18px; border-radius: 10px;
+            border: 1px solid #d2d2d7; background: rgba(255,255,255,0.8);
+            font-size: 14px; box-sizing: border-box; outline: none;
+        }
+        button { 
+            width: 100%; padding: 14px; background: var(--apple-blue); color: white;
+            border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+        }
+        .loader { display: none; text-align: center; font-size: 14px; color: var(--apple-blue); margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="card-form">
+    <h1>PQRS Inteligente</h1>
+    <label>Tu Nombre</label>
+    <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
+    
+    <label>Redacción de la Solicitud</label>
+    <textarea id="redaccion" rows="4" placeholder="Escribe tu solicitud aquí..."></textarea>
+    
+    <button onclick="enviarPQRS()">Analizar y Guardar</button>
+    <div id="loading" class="loader">IA procesando... un momento...</div>
+</div>
+
+<script>
+    async function enviarPQRS() {
+        const btn = document.querySelector('button');
+        const loader = document.getElementById('loading');
+        const urlScript = "TU_URL_DE_APPS_SCRIPT_AQUI";
+        
+        const data = {
+            nombre: document.getElementById('nombre').value,
+            redaccion: document.getElementById('redaccion').value
+        };
+
+        if(!data.nombre || !data.redaccion) return alert("Por favor completa los campos");
+
+        btn.style.display = 'none';
+        loader.style.display = 'block';
+
+        try {
+            await fetch(urlScript, {
+                method: "POST",
+                mode: "no-cors", 
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            alert("¡Listo! La IA clasificó y guardó la PQRS.");
+            document.getElementById('nombre').value = '';
+            document.getElementById('redaccion').value = '';
+        } catch (e) {
+            alert("Error al conectar con el servidor");
+        } finally {
+            btn.style.display = 'block';
+            loader.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>
+</textarea>
+                </div>
+                
+                <div class="code-guide">
+                    <h3>Análisis de Interfaz y Enlace</h3>
+                    <p><strong>¿Dónde agregar la URL de conexión?</strong><br>
+                    Busca dentro de la etiqueta de control script la variable de asignación de ruta <span class="highlight-marker">urlScript</span> y sustituye el marcador de posición de texto por la URL productiva que obtuviste al implementar tu contenedor en Apps Script.</p>
+                    
+                    <h3 style="margin-top:15px;">Detalles Críticos de Diseño:</h3>
+                    <ul>
+                        <li><span class="tech-pill">mode: "no-cors"</span>: Obligatorio para realizar transmisiones directas eliminando las restricciones de origen cruzado de los navegadores web tradicionales.</li>
+                        <li><span class="tech-pill">backdrop-filter</span>: Aplica el efecto visual translúcido nativo del ecosistema Apple directamente sobre la tarjeta contenedora del formulario.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- [h] PLANTA BAJA INTEGRADA (FORMULARIO ARRIBA + TABLA ABAJO CON REFRESH) -->
+    <div id="tab-plantabaja" class="tab-panel">
+        <div class="card" style="padding: 20px;">
+            <div class="dashboard-split">
+                
+                <!-- BARRA DE CONTROL DEL REFRESH -->
+                <div class="dashboard-control-bar">
+                    <div class="live-indicator">
+                        <div class="pulse-dot"></div>
+                        <span>Monitoreo Activo de la Planta Baja</span>
+                    </div>
+                    
+                    <div class="refresh-controls">
+                        <div class="slider-container">
+                            <label for="refresh-slider" style="font-size:13px; color:var(--apple-grey); font-weight:600;">TEMPORIZADOR:</label>
+                            <input type="range" id="refresh-slider" min="10" max="60" value="15" oninput="updateSliderLabel(this.value)">
+                            <span id="slider-label" class="refresh-badge">15s</span>
+                        </div>
+                        <button onclick="manualRefresh()" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 8px; background: var(--apple-dark); color: white; border: none; cursor: pointer;">Actualizar Ahora</button>
+                    </div>
+                </div>
+
+                <!-- BLOQUE SUPERIOR: VISTA FORMULARIO EN VIVO -->
+                <div class="frame-wrapper">
+                    <!-- Formulario local simulado o cargado dinámicamente mediante el código embebido seguro -->
+                    <iframe id="iframe-form" src="about:blank" title="Formulario de Entrada"></iframe>
+                </div>
+
+                <!-- BLOQUE INFERIOR: VISTA TABLA GOOGLE SPREADSHEET REAL -->
+                <div class="frame-wrapper">
+                    <iframe id="iframe-sheet" src="https://docs.google.com/spreadsheets/d/1Qd7k0iT6nOvuOnei8aYkxYQbLgPxXzj7BgED_V1s1Ek/htmlembed?widget=true&headers=false&chrome=false&gid=0" title="Matriz de Persistencia Real"></iframe>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- [i] FUTURAS IMPLEMENTACIONES -->
+    <div id="tab-futuro" class="tab-panel">
+        <div class="card">
+            <h2>Evolución del Ecosistema y Siguiente Escalón Tecnológico</h2>
+            <p>El horizonte de desarrollo de la solución prevé la transición hacia experiencias más ricas e integradas para el tratamiento inteligente de solicitudes:</p>
+            
+            <div class="dofa-grid">
+                <div class="dofa-box" style="border-left: 4px solid var(--apple-blue); background:rgba(0,113,227,0.02)">
+                    <h3>1. Módulo de Chat por Voz</h3>
+                    <p>Integración de API de Web Audio nativa para capturar la voz del usuario desde la Recepción, despachando el flujo binario a los endpoints de Speech-to-Text de OpenAI (Whisper). Esto permitirá a la IA procesar la transcripción y mantener la consistencia en la inyección de datos estructurados en la Planta Baja sin requerir digitación manual.</p>
+                </div>
+                
+                <div class="dofa-box" style="border-left: 4px solid var(--success); background:rgba(52,199,89,0.02)">
+                    <h3>2. Canal de Voz Premium (Omnicanalidad)</h3>
+                    <p>Despliegue de un pipeline avanzado de respuesta conversacional bidireccional en tiempo real. Utilizando síntesis de voz fidedigna (Text-to-Speech adaptativo), el sistema no solo clasificará el incidente de forma interna, sino que responderá al usuario verbalmente con el resumen analítico generado por el cerebro de IA, simulando una llamada interactiva con un agente experto.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    Material Unificado de Transferencia Metodológica | Héctor Fabio Hoyos Giraldo - funcionafacil
+</footer>
+
+<script>
+    // CONTROL DE NAVEGACIÓN ASÍNCRONA ENTRE PESTAÑAS
+    function switchTab(evt, tabId) {
+        const panels = document.querySelectorAll('.tab-panel');
+        panels.forEach(panel => panel.classList.remove('active'));
+
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        evt.currentTarget.classList.add('active');
+
+        // Inicializar el formulario embebido si se accede a la pestaña del laboratorio vivo
+        if(tabId === 'tab-plantabaja') {
+            setupFormIframe();
+        }
+    }
+
+    // GESTIÓN DEL SISTEMA DE ACTUALIZACIÓN DE LA PLANTA BAJA
+    let refreshIntervalTime = 15; // Tiempo por defecto (segundos)
+    let refreshTimer;
+
+    function updateSliderLabel(val) {
+        refreshIntervalTime = parseInt(val);
+        document.getElementById('slider-label').innerText = val + 's';
+        restartTimer();
+    }
+
+    function manualRefresh() {
+        const sheetIframe = document.getElementById('iframe-sheet');
+        // Recargar el origen del iframe para forzar a Google a despachar los datos frescos de las celdas
+        sheetIframe.src = sheetIframe.src;
+    }
+
+    function restartTimer() {
+        clearInterval(refreshTimer);
+        refreshTimer = setInterval(() => {
+            manualRefresh();
+        }, refreshIntervalTime * 1000);
+    }
+
+    // INYECCIÓN DINÁMICA DEL FORMULARIO WEB EN EL IFRAME SUPERIOR
+    function setupFormIframe() {
+        const iframeForm = document.getElementById('iframe-form');
+        if(iframeForm.src === "about:blank" || iframeForm.src === "") {
+            // Generamos el HTML del formulario incrustado dinámicamente para aislarlo en el sandbox del laboratorio
+            const formHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: -apple-system, sans-serif; background: #ffffff; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; box-sizing: border-box; }
+                        .box { width: 100%; max-width: 340px; text-align: center; }
+                        h3 { margin-bottom: 15px; font-weight: 600; font-size: 16px; color: #1d1d1f; }
+                        input, textarea { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #d2d2d7; font-size: 13px; box-sizing: border-box; outline: none; background: #fafafc; }
+                        button { width: 100%; padding: 11px; background: #0071e3; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+                        button:hover { background: #0077ed; }
+                    </style>
+                </head>
+                <body>
+                    <div class="box">
+                        <h3>Simulador de Entrada (Recepción)</h3>
+                        <input type="text" id="sim-nombre" placeholder="Nombre del Aprendiz/Usuario">
+                        <textarea id="sim-redaccion" rows="3" placeholder="Redacta la PQRS de prueba aquí..."></textarea>
+                        <button onclick="ejecutarEnvio()">Analizar y Transmitir asíncronamente</button>
+                    </div>
+                    <script>
+                        async function ejecutarEnvio() {
+                            const urlScript = "https://script.google.com/macros/s/AKfycbxw-NH_fyp_l4xruviwdDlHEPV3rhKGRxTtfsvbxmhA7a_rwU0MS-lDb1vnRO4nK1lF/exec";
+                            const payload = {
+                                nombre: document.getElementById('sim-nombre').value,
+                                redaccion: document.getElementById('sim-redaccion').value
+                            };
+                            if(!payload.nombre || !payload.redaccion) return alert("Completa los campos de prueba");
+                            
+                            try {
+                                await fetch(urlScript, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                                alert("PQRS enviada con éxito a la Planta Baja. Espera el ciclo de refresco.");
+                                document.getElementById('sim-nombre').value = '';
+                                document.getElementById('sim-redaccion').value = '';
+                            } catch(e) {
+                                alert("Error en el envío");
+                            }
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `;
+            const blob = new Blob([formHTML], { type: 'text/html' });
+            iframeForm.src = URL.createObjectURL(blob);
+        }
+    }
+
+    // Inicializar temporizador al cargar el documento por primera vez
+    window.onload = () => {
+        restartTimer();
+    };
+</script>
+
+</body>
+</html>
